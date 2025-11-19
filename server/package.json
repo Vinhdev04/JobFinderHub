@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vinhdev04/JobFinderHub.git"
+  },
+  "author": "Vinhdev 04",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vinhdev04/JobFinderHub/issues"
+  },
+  "homepage": "https://github.com/Vinhdev04/JobFinderHub#readme"
+}
