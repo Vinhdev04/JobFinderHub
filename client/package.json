@@ -3,14 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  
+  "homepage": "https://vinhdev04.github.io/JobFinderHub/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:ui": "vitest"
+    "test:ui": "vitest",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   
   },
   "dependencies": {
