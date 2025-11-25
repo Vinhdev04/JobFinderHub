@@ -1,0 +1,328 @@
+/* ===================================
+   BACK TO TOP BUTTON
+   =================================== */
+.back-to-top {
+  position: fixed;
+  bottom: var(--spacing-2xl);
+  right: var(--spacing-2xl);
+  z-index: var(--z-fixed);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.8);
+  transition: all var(--transition-base);
+}
+
+.back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.3) rotate(-180deg);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* ===================================
+   BUTTON STYLES
+   =================================== */
+.back-to-top__button {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border: none;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: var(--shadow-xl);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="light"] .back-to-top__button {
+  background: var(--neutral-0);
+}
+
+[data-theme="dark"] .back-to-top__button {
+  background: var(--bg-elevated);
+}
+
+.back-to-top__button:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: var(--shadow-2xl);
+}
+
+.back-to-top__button:active {
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* ===================================
+   ICON STYLES
+   =================================== */
+.back-to-top__icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--text-xl);
+  color: var(--primary-500);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-to-top__button:hover .back-to-top__icon {
+  color: var(--secondary-500);
+  animation: bounce-up 0.6s ease-in-out infinite;
+}
+
+@keyframes bounce-up {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-6px);
+  }
+}
+
+/* ===================================
+   PROGRESS CIRCLE
+   =================================== */
+.back-to-top__progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.back-to-top__progress-bg {
+  fill: none;
+  stroke: var(--border-light);
+  stroke-width: 3;
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .back-to-top__progress-bg {
+  stroke: var(--border-medium);
+}
+
+.back-to-top__progress-bar {
+  fill: none;
+  stroke: url(#progress-gradient);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 289;
+  stroke-dashoffset: 289;
+  transition: stroke-dashoffset var(--transition-fast);
+}
+
+/* Gradient for progress bar */
+.back-to-top__progress::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Add gradient definition */
+.back-to-top {
+  --gradient-start: var(--primary-500);
+  --gradient-end: var(--secondary-500);
+}
+
+.back-to-top__progress-bar {
+  stroke: var(--gradient-start);
+}
+
+.back-to-top__button:hover .back-to-top__progress-bar {
+  stroke: var(--gradient-end);
+  filter: drop-shadow(0 0 8px var(--secondary-500));
+}
+
+/* ===================================
+   GLOW EFFECT
+   =================================== */
+.back-to-top__button::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--transition-base);
+  filter: blur(12px);
+}
+
+.back-to-top__button:hover::before {
+  opacity: 0.6;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* ===================================
+   RIPPLE EFFECT
+   =================================== */
+.back-to-top__button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: var(--radius-full);
+  background: rgba(0, 102, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width var(--transition-base), height var(--transition-base);
+}
+
+.back-to-top__button:active::after {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: width var(--transition-fast), height var(--transition-fast),
+    opacity var(--transition-slow);
+}
+
+/* ===================================
+   TOOLTIP
+   =================================== */
+.back-to-top__button[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: calc(100% + var(--spacing-md));
+  top: 50%;
+  transform: translateY(-50%);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-base);
+  pointer-events: none;
+}
+
+.back-to-top__button:hover[data-tooltip]::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+  }
+
+  .back-to-top__button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .back-to-top__icon {
+    font-size: var(--text-lg);
+  }
+
+  .back-to-top__progress-bar {
+    stroke-width: 2.5;
+  }
+
+  .back-to-top__progress-bg {
+    stroke-width: 2.5;
+  }
+}
+
+@media (max-width: 576px) {
+  .back-to-top {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+  }
+
+  .back-to-top__button {
+    width: 45px;
+    height: 45px;
+  }
+
+  .back-to-top__icon {
+    font-size: var(--text-md);
+  }
+}
+
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
+.back-to-top__button:focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: 4px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top,
+  .back-to-top__button,
+  .back-to-top__icon,
+  .back-to-top__progress-bar {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ===================================
+   DARK MODE ADJUSTMENTS
+   =================================== */
+[data-theme="dark"] .back-to-top__button {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .back-to-top__button:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+}
+
+/* ===================================
+   PRINT STYLES
+   =================================== */
+@media print {
+  .back-to-top {
+    display: none;
+  }
+}

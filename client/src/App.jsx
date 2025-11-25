@@ -1,13 +1,9 @@
 
-import DefaultLayout from './layout/DefaulLayout';
 function App() {
   
 
-  return (
-    <>
-     <DefaultLayout/>
-    </>
-  )
+  return null;
+  
 }
 
 export default App

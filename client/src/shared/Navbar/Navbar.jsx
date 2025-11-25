@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Dropdown, Button, Badge } from 'antd';
+import { Menu, Dropdown, Button, Badge, Switch } from 'antd';
 import { 
   BellOutlined, 
   UserOutlined, 
@@ -13,13 +13,17 @@ import {
   TrophyOutlined,
   SafetyOutlined,
   HeartOutlined,
-  FileTextOutlined
+  FileTextOutlined,
+  BulbOutlined,
+  MoonOutlined,
+  SunOutlined
 } from '@ant-design/icons';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,8 +33,28 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Theme toggle handler
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    const theme = newTheme ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  };
+
   const jobMenu = (
-    <Menu className="navbar__dropdown-menu">
+    <Menu className="navbar__dropdown-menu theme-transition">
       <Menu.ItemGroup title="Quản lý việc làm">
         <Menu.Item key="1" icon={<SearchOutlined />}>Việc làm đã ứng tuyển</Menu.Item>
         <Menu.Item key="2" icon={<HeartOutlined />}>Việc làm đã lưu</Menu.Item>
@@ -46,31 +70,31 @@ const Navbar = () => {
   );
 
   const toolMenu = (
-    <Menu className="navbar__dropdown-menu">
+    <Menu className="navbar__dropdown-menu theme-transition">
       <Menu.Item key="1" icon={<BookOutlined />}>Cẩm Nang Nghề Nghiệp</Menu.Item>
       <Menu.Item key="2" icon={<SolutionOutlined />}>La Bàn Sự Nghiệp</Menu.Item>
       <Menu.Item key="3" icon={<TrophyOutlined />}>Trạm Sạc Kỹ Năng</Menu.Item>
       <Menu.Item key="4" icon={<SearchOutlined />}>Tọa Độ Nhân Tài</Menu.Item>
       <Menu.Item key="5" icon={<SafetyOutlined />}>Bản Tin Công Sở</Menu.Item>
-      <Menu.Item key="6" icon={<HeartOutlined />}>Kì Ốt Vui Vẻ</Menu.Item>
+      <Menu.Item key="6" icon={<HeartOutlined />}>Kì ột Vui Vẻ</Menu.Item>
       <Menu.Item key="7" icon={<FileTextOutlined />}>Loa tin tức</Menu.Item>
     </Menu>
   );
 
   const careerMenu = (
-    <Menu className="navbar__dropdown-menu">
+    <Menu className="navbar__dropdown-menu theme-transition">
       <Menu.Item key="1" icon={<BookOutlined />}>Cẩm Nang Nghề Nghiệp</Menu.Item>
       <Menu.Item key="2" icon={<SolutionOutlined />}>La Bàn Sự Nghiệp</Menu.Item>
       <Menu.Item key="3" icon={<TrophyOutlined />}>Trạm Sạc Kỹ Năng</Menu.Item>
       <Menu.Item key="4" icon={<SearchOutlined />}>Tọa Độ Nhân Tài</Menu.Item>
       <Menu.Item key="5" icon={<SafetyOutlined />}>Bản Tin Công Sở</Menu.Item>
-      <Menu.Item key="6" icon={<HeartOutlined />}>Kì Ốt Vui Vẻ</Menu.Item>
+      <Menu.Item key="6" icon={<HeartOutlined />}>Kì ột Vui Vẻ</Menu.Item>
       <Menu.Item key="7" icon={<FileTextOutlined />}>Loa tin tức</Menu.Item>
     </Menu>
   );
 
   const regionMenu = (
-    <Menu className="navbar__dropdown-menu">
+    <Menu className="navbar__dropdown-menu theme-transition">
       <Menu.Item key="1" icon={<HomeOutlined />}>Miền Bắc</Menu.Item>
       <Menu.Item key="2" icon={<HomeOutlined />}>Miền Trung</Menu.Item>
       <Menu.Item key="3" icon={<HomeOutlined />}>Miền Nam</Menu.Item>
@@ -78,7 +102,7 @@ const Navbar = () => {
   );
 
   const userMenu = (
-    <Menu className="navbar__dropdown-menu">
+    <Menu className="navbar__dropdown-menu theme-transition">
       <Menu.Item key="1" icon={<UserOutlined />}>Đăng nhập</Menu.Item>
       <Menu.Item key="2" icon={<UserOutlined />}>Đăng ký</Menu.Item>
       <Menu.Item key="3" icon={<SearchOutlined />}>Tìm ứng viên</Menu.Item>
@@ -86,7 +110,7 @@ const Navbar = () => {
   );
 
   const recruiterMenu = (
-    <Menu className="navbar__dropdown-menu">
+    <Menu className="navbar__dropdown-menu theme-transition">
       <Menu.Item key="1" icon={<FileTextOutlined />}>Đăng tuyển</Menu.Item>
       <Menu.Item key="2" icon={<SearchOutlined />}>Tìm ứng viên</Menu.Item>
       <Menu.Item key="3" icon={<UserOutlined />}>Nhà Tuyển Dụng</Menu.Item>
@@ -96,13 +120,13 @@ const Navbar = () => {
   return (
     <>
       {/* Top Banner */}
-      <div className="navbar-banner">
+      <div className="navbar-banner theme-transition">
         <div className="navbar-banner__content">
           <span className="navbar-banner__icon">🎯</span>
           <span className="navbar-banner__text">
             Ứng tuyển 1 chạm - Mọi lúc mọi nơi
           </span>
-          <span className="navbar-banner__app">Vieclam24h: Tìm Việc Nhanh</span>
+          <span className="navbar-banner__app">JobFinderHub: Tìm Việc Nhanh</span>
           <Button className="navbar-banner__button" size="small">
             Tải app ngay
           </Button>
@@ -110,7 +134,7 @@ const Navbar = () => {
       </div>
 
       {/* Main Navbar */}
-      <nav className={`navbar ${isScrolled ? 'navbar--scrolled' : ''}`}>
+      <nav className={`navbar theme-transition ${isScrolled ? 'navbar--scrolled' : ''}`}>
         <div className="navbar__container">
           {/* Logo */}
           <div className="navbar__logo">
@@ -137,26 +161,26 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="navbar__menu">
-            <Dropdown overlay={jobMenu} trigger={['hover']} placement="bottomCenter" overlayClassName="navbar__dropdown-overlay">
-              <button className="navbar__menu-item" onClick={(e) => e.preventDefault()}>
+            <Dropdown overlay={jobMenu} trigger={['hover']} placement="bottomCenter">
+              <button className="navbar__menu-item theme-transition">
                 Việc làm <DownOutlined className="navbar__menu-icon" />
               </button>
             </Dropdown>
 
-            <Dropdown overlay={toolMenu} trigger={['hover']} placement="bottomCenter" overlayClassName="navbar__dropdown-overlay">
-              <button className="navbar__menu-item" onClick={(e) => e.preventDefault()}>
+            <Dropdown overlay={toolMenu} trigger={['hover']} placement="bottomCenter">
+              <button className="navbar__menu-item theme-transition">
                 Công cụ <DownOutlined className="navbar__menu-icon" />
               </button>
             </Dropdown>
 
-            <Dropdown overlay={careerMenu} trigger={['hover']} placement="bottomCenter" overlayClassName="navbar__dropdown-overlay">
-              <button className="navbar__menu-item" onClick={(e) => e.preventDefault()}>
+            <Dropdown overlay={careerMenu} trigger={['hover']} placement="bottomCenter">
+              <button className="navbar__menu-item theme-transition">
                 Cẩm nang nghề nghiệp <DownOutlined className="navbar__menu-icon" />
               </button>
             </Dropdown>
 
-            <Dropdown overlay={regionMenu} trigger={['hover']} placement="bottomCenter" overlayClassName="navbar__dropdown-overlay">
-              <button className="navbar__menu-item" onClick={(e) => e.preventDefault()}>
+            <Dropdown overlay={regionMenu} trigger={['hover']} placement="bottomCenter">
+              <button className="navbar__menu-item theme-transition">
                 Miền Nam <DownOutlined className="navbar__menu-icon" />
               </button>
             </Dropdown>
@@ -164,10 +188,25 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="navbar__actions">
+            {/* Theme Toggle */}
+            <div className="navbar__theme-toggle">
+              <button 
+                className="navbar__theme-button theme-transition"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <SunOutlined className="navbar__theme-icon" />
+                ) : (
+                  <MoonOutlined className="navbar__theme-icon" />
+                )}
+              </button>
+            </div>
+
             <div className="navbar__user-info">
               <span className="navbar__user-label">Người tìm việc</span>
-              <Dropdown overlay={userMenu} trigger={['hover']} overlayClassName="navbar__dropdown-overlay">
-                <button className="navbar__user-button">
+              <Dropdown overlay={userMenu} trigger={['hover']}>
+                <button className="navbar__user-button theme-transition">
                   Đăng ký/Đăng nhập
                 </button>
               </Dropdown>
@@ -177,13 +216,13 @@ const Navbar = () => {
               <Button 
                 type="text" 
                 icon={<BellOutlined />} 
-                className="navbar__icon-button"
+                className="navbar__icon-button theme-transition"
               />
             </Badge>
 
-            <Dropdown overlay={recruiterMenu} trigger={['hover']} overlayClassName="navbar__dropdown-overlay">
+            <Dropdown overlay={recruiterMenu} trigger={['hover']}>
               <Button type="primary" className="navbar__recruiter-button">
-                <UserOutlined /> DÀNH CHO Nhà Tuyển Dụng
+                <UserOutlined /> DÀNH CHO NHÀ TUYỂN DỤNG
               </Button>
             </Dropdown>
 
@@ -191,43 +230,43 @@ const Navbar = () => {
             <Button
               type="text"
               icon={isMobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
-              className="navbar__mobile-toggle"
+              className="navbar__mobile-toggle theme-transition"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             />
           </div>
         </div>
 
         {/* Secondary Navigation */}
-        <div className="navbar__secondary">
+        <div className="navbar__secondary theme-transition">
           <div className="navbar__secondary-container">
-            <button className="navbar__secondary-link navbar__secondary-link--active">
+            <button className="navbar__secondary-link navbar__secondary-link--active theme-transition">
               <HomeOutlined /> Cẩm Nang Nghề Nghiệp
             </button>
-            <button className="navbar__secondary-link">La Bàn Sự Nghiệp</button>
-            <button className="navbar__secondary-link">Trạm Sạc Kỹ Năng</button>
-            <button className="navbar__secondary-link">Tọa Độ Nhân Tài</button>
-            <button className="navbar__secondary-link">Bản Tin Công Sở</button>
-            <button className="navbar__secondary-link">Kì Ốt Vui Vẻ</button>
-            <button className="navbar__secondary-link">Loa tin tức</button>
+            <button className="navbar__secondary-link theme-transition">La Bàn Sự Nghiệp</button>
+            <button className="navbar__secondary-link theme-transition">Trạm Sạc Kỹ Năng</button>
+            <button className="navbar__secondary-link theme-transition">Tọa Độ Nhân Tài</button>
+            <button className="navbar__secondary-link theme-transition">Bản Tin Công Sở</button>
+            <button className="navbar__secondary-link theme-transition">Kì ột Vui Vẻ</button>
+            <button className="navbar__secondary-link theme-transition">Loa tin tức</button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        <div className={`navbar__mobile-menu ${isMobileMenuOpen ? 'navbar__mobile-menu--open' : ''}`}>
+        <div className={`navbar__mobile-menu theme-transition ${isMobileMenuOpen ? 'navbar__mobile-menu--open' : ''}`}>
           <div className="navbar__mobile-section">
             <h4 className="navbar__mobile-title">Việc làm</h4>
-            <button className="navbar__mobile-link"><SearchOutlined /> Tìm Việc Làm</button>
-            <button className="navbar__mobile-link"><SolutionOutlined /> CV Hay</button>
-            <button className="navbar__mobile-link"><BookOutlined /> VietnamSalary</button>
-            <button className="navbar__mobile-link"><TrophyOutlined /> CareerMap</button>
+            <button className="navbar__mobile-link theme-transition"><SearchOutlined /> Tìm Việc Làm</button>
+            <button className="navbar__mobile-link theme-transition"><SolutionOutlined /> CV Hay</button>
+            <button className="navbar__mobile-link theme-transition"><BookOutlined /> VietnamSalary</button>
+            <button className="navbar__mobile-link theme-transition"><TrophyOutlined /> CareerMap</button>
           </div>
 
           <div className="navbar__mobile-section">
             <h4 className="navbar__mobile-title">Công cụ</h4>
-            <button className="navbar__mobile-link"><BookOutlined /> Cẩm Nang Nghề Nghiệp</button>
-            <button className="navbar__mobile-link"><SolutionOutlined /> La Bàn Sự Nghiệp</button>
-            <button className="navbar__mobile-link"><TrophyOutlined /> Trạm Sạc Kỹ Năng</button>
-            <button className="navbar__mobile-link"><SearchOutlined /> Tọa Độ Nhân Tài</button>
+            <button className="navbar__mobile-link theme-transition"><BookOutlined /> Cẩm Nang Nghề Nghiệp</button>
+            <button className="navbar__mobile-link theme-transition"><SolutionOutlined /> La Bàn Sự Nghiệp</button>
+            <button className="navbar__mobile-link theme-transition"><TrophyOutlined /> Trạm Sạc Kỹ Năng</button>
+            <button className="navbar__mobile-link theme-transition"><SearchOutlined /> Tọa Độ Nhân Tài</button>
           </div>
 
           <div className="navbar__mobile-section">
@@ -235,7 +274,7 @@ const Navbar = () => {
             <Button type="primary" block className="navbar__mobile-button">
               Đăng nhập
             </Button>
-            <Button block className="navbar__mobile-button">
+            <Button block className="navbar__mobile-button theme-transition">
               Đăng ký
             </Button>
             <Button type="primary" block className="navbar__mobile-button navbar__mobile-button--recruiter">
