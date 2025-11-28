@@ -29,6 +29,55 @@ const routes = [
     ]
   },
 
+  // user-route
+  {
+    path: '/user',
+    children: [
+      {
+        path: '/user/profile',
+       
+      }
+    ]
+  },
+
+  // recruitment-route
+  {
+    path: '/recruitment',
+    children: [
+      {
+        path: '/recruitment/apply',
+      },{
+        path: '/recruitment/post',
+      },
+      {
+        path: '/recruitment/profile',
+      },{
+        path: '/recruitment/saved',
+      },
+      {
+
+      }
+
+    ]
+  },
+
+  // company-route
+  {
+    path: '/company',
+    children: [
+      {
+        path: '/company/apply',
+      },
+      {
+        path: '/company/post',
+      }
+      ,{
+        path: '/company/profile',
+      }
+    ]
+  }
+
+
 ]
 
 export default routes

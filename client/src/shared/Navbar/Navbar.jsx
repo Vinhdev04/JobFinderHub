@@ -22,9 +22,8 @@ import {
   EyeOutlined
 } from '@ant-design/icons';
 import './Navbar.css';
-import { navItems, cities, jobMenu } from './const.jsx';
-import { NavLink } from 'react-router-dom';
-
+import { navItems, cities } from './const.jsx';
+import {NavLink} from 'react-router-dom';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,6 +31,8 @@ const Navbar = () => {
   const [activeNav, setActiveNav] = useState('home');
   const [selectedCity, setSelectedCity] = useState('Hồ Chí Minh');
   const [jobMenuOpen, setJobMenuOpen] = useState(false);
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
+  const [citySearchTerm, setCitySearchTerm] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,23 +57,32 @@ const Navbar = () => {
     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
 
+
+
+  const filteredCities = cities.filter(city => 
+    city.name.toLowerCase().includes(citySearchTerm.toLowerCase())
+  );
+
   const cityMenu = (
-    <Menu 
-      className="jfh-dropdown-menu jfh-dropdown-menu--cities"
-      selectedKeys={[selectedCity]}
-      onClick={({ key }) => setSelectedCity(key)}
-    >
+    <div className="jfh-dropdown-menu jfh-dropdown-menu--cities">
       <div className="jfh-dropdown-menu__search">
         <Input 
           placeholder="Tìm kiếm tỉnh thành..."
           prefix={<SearchOutlined />}
           size="small"
+          value={citySearchTerm}
+          onChange={(e) => setCitySearchTerm(e.target.value)}
         />
       </div>
-      {cities.map(city => (
-        <Menu.Item 
-          key={city.name} 
-          className="jfh-dropdown-menu__item jfh-dropdown-menu__item--city"
+      {filteredCities.map(city => (
+        <div 
+          key={city.id}
+          className={`jfh-dropdown-menu__item jfh-dropdown-menu__item--city ${selectedCity === city.name ? 'jfh-dropdown-menu__item--selected' : ''}`}
+          onClick={() => {
+            setSelectedCity(city.name);
+            setCityDropdownOpen(false);
+            setCitySearchTerm('');
+          }}
         >
           <div className="jfh-city-item">
             <span className="jfh-city-item__name">
@@ -80,13 +90,20 @@ const Navbar = () => {
             </span>
             <span className="jfh-city-item__count">{city.count.toLocaleString()} việc làm</span>
           </div>
-        </Menu.Item>
+        </div>
       ))}
-      <Menu.Divider />
-      <Menu.Item key="all" className="jfh-dropdown-menu__item jfh-dropdown-menu__item--all">
+      <div className="jfh-dropdown-divider"></div>
+      <div 
+        className="jfh-dropdown-menu__item jfh-dropdown-menu__item--all"
+        onClick={() => {
+          setSelectedCity('Tất cả');
+          setCityDropdownOpen(false);
+          setCitySearchTerm('');
+        }}
+      >
         <strong>Tất cả tỉnh thành</strong>
-      </Menu.Item>
-    </Menu>
+      </div>
+    </div>
   );
 
   return (
@@ -129,15 +146,27 @@ const Navbar = () => {
               placeholder="Tìm kiếm công việc, công ty..."
               prefix={<SearchOutlined className="jfh-navbar__search-icon" />}
               suffix={
-                <Dropdown 
-                  overlay={cityMenu} 
-                  trigger={['click']}
-                  placement="bottomRight"
-                >
-                  <Button type="link" size="small" className="jfh-navbar__search-location">
+                <div className="jfh-navbar__search-location-wrapper">
+                  <button 
+                    type="button"
+                    className="jfh-navbar__search-location"
+                    onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
+                  >
                     <EnvironmentOutlined /> {selectedCity} <DownOutlined style={{ fontSize: '10px' }} />
-                  </Button>
-                </Dropdown>
+                  </button>
+                  {cityDropdownOpen && (
+                    <>
+                      <div 
+                        className="jfh-dropdown-overlay"
+                        onClick={() => {
+                          setCityDropdownOpen(false);
+                          setCitySearchTerm('');
+                        }}
+                      />
+                      {cityMenu}
+                    </>
+                  )}
+                </div>
               }
               className="jfh-navbar__search-input"
             />
@@ -148,22 +177,72 @@ const Navbar = () => {
             {navItems.map(item => {
               if (item.hasDropdown) {
                 return (
-                  <Dropdown 
-                    key={item.id}
-                    overlay={jobMenu} 
-                    trigger={['click']}
-                    visible={jobMenuOpen}
-                    onVisibleChange={setJobMenuOpen}
-                  >
+                  <div key={item.id} className="jfh-navbar__nav-item-wrapper">
                     <button
                       className={`jfh-navbar__nav-item ${activeNav === item.id ? 'jfh-navbar__nav-item--active' : ''}`}
-                      onClick={() => setActiveNav(item.id)}
+                      onClick={() => {
+                        setActiveNav(item.id);
+                        setJobMenuOpen(!jobMenuOpen);
+                      }}
                     >
                       {item.icon}
                       <span className="jfh-navbar__nav-item-label">{item.label}</span>
                       <DownOutlined className="jfh-navbar__nav-item-arrow" />
                     </button>
-                  </Dropdown>
+                    {jobMenuOpen && (
+                      <>
+                        <div 
+                          className="jfh-dropdown-overlay"
+                          onClick={() => setJobMenuOpen(false)}
+                        />
+                        <div className="jfh-dropdown-menu">
+                          <div className="jfh-dropdown-menu__item jfh-dropdown-menu__header">
+                            <SearchOutlined /> <strong>Tìm việc làm</strong>
+                          </div>
+                          <div className="jfh-dropdown-divider"></div>
+                          <div className="jfh-dropdown-menu__item jfh-dropdown-menu__subtitle">
+                            <FolderOpenOutlined /> Quản lý việc làm
+                          </div>
+                          <div 
+                            className="jfh-dropdown-menu__item"
+                            onClick={() => {
+                              setJobMenuOpen(false);
+                              // Navigate to applied jobs
+                            }}
+                          >
+                            <CheckOutlined /> Việc làm đã ứng tuyển
+                          </div>
+                          <div 
+                            className="jfh-dropdown-menu__item"
+                            onClick={() => {
+                              setJobMenuOpen(false);
+                              // Navigate to saved jobs
+                            }}
+                          >
+                            <HeartOutlined /> Việc làm đã lưu
+                          </div>
+                          <div 
+                            className="jfh-dropdown-menu__item"
+                            onClick={() => {
+                              setJobMenuOpen(false);
+                              // Navigate to waiting jobs
+                            }}
+                          >
+                            <ClockCircleOutlined /> Việc làm chờ ứng tuyển
+                          </div>
+                          <div 
+                            className="jfh-dropdown-menu__item"
+                            onClick={() => {
+                              setJobMenuOpen(false);
+                              // Navigate to profile views
+                            }}
+                          >
+                            <EyeOutlined /> Nhà tuyển dụng xem hồ sơ bạn
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 );
               }
               
@@ -202,27 +281,27 @@ const Navbar = () => {
             </Badge>
 
             {/* User Menu - Desktop */}
-            <div className="jfh-navbar__user">
-              <Button to="/auth.login" 
+            <NavLink to="/auth/login" className="jfh-navbar__user">
+              <Button 
                 type="text" 
                 icon={<UserOutlined />}
                 className="jfh-navbar__user-btn"
               >
                 <span className="jfh-navbar__user-text">Đăng nhập</span>
               </Button>
-            </div>
+            </NavLink>
 
             {/* Recruiter Button */}
-            <Button  to=""
+            <Button 
               type="primary" 
               icon={<TeamOutlined />}
               className="jfh-navbar__recruiter-btn"
             >
               <span className="jfh-navbar__recruiter-text">Nhà tuyển dụng</span>
             </Button>
-
+            
             {/* Post Job Button */}
-            <Button to="" 
+            <Button 
               type="primary" 
               icon={<PlusOutlined />}
               className="jfh-navbar__post-btn"
@@ -274,7 +353,7 @@ const Navbar = () => {
 
           {/* Mobile Actions */}
           <div className="jfh-navbar__mobile-section jfh-navbar__mobile-section--actions">
-            <Button to="/auth/login"
+            <Button 
               type="primary" 
               size="large"
               icon={<UserOutlined />}
@@ -283,7 +362,7 @@ const Navbar = () => {
             >
               Đăng nhập / Đăng ký
             </Button>
-            <Button to="" 
+            <Button 
               type="primary"
               size="large"
               icon={<TeamOutlined />}
@@ -292,7 +371,7 @@ const Navbar = () => {
             >
               Dành cho Nhà tuyển dụng
             </Button>
-            <Button to=""
+            <Button 
               size="large"
               icon={<PlusOutlined />}
               className="jfh-navbar__mobile-btn jfh-navbar__mobile-btn--post"
