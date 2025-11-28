@@ -1,0 +1,252 @@
+/* LoginForm.css - BEM Naming Convention */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  /* height: 100%;
+   */
+  gap: 20px;
+}
+
+/* Header */
+.login-form__header {
+  margin-bottom: 32px;
+}
+
+.login-form__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-form__tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+}
+
+.login-form__tab {
+  padding: 10px 24px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.login-form__tab--active {
+  color: #7c3aed;
+}
+
+.login-form__tab--active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #7c3aed;
+  border-radius: 2px;
+  animation: tabSlideIn 0.3s ease;
+}
+
+@keyframes tabSlideIn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.login-form__tab-divider {
+  font-size: 14px;
+  color: #d1d5db;
+  font-weight: 400;
+}
+
+/* Body */
+.login-form__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-form__input-group {
+  position: relative;
+}
+
+.login-form__input-wrapper {
+  position: relative;
+}
+
+.login-form__input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #1f2937;
+  transition: all 0.3s ease;
+  outline: none;
+  background: #fafafa;
+}
+
+.login-form__input::placeholder {
+  color: #9ca3af;
+}
+
+.login-form__input:focus {
+  border-color: #7c3aed;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.login-form__toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.login-form__toggle-btn:hover {
+  color: #7c3aed;
+}
+
+/* Submit Button */
+.login-form__submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+
+.login-form__submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+.login-form__submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Divider */
+.login-form__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.login-form__divider::before,
+.login-form__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.login-form__divider span {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* Social Login Buttons */
+.login-form__social-btn {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.login-form__social-btn:hover {
+  border-color: #7c3aed;
+  background: #faf5ff;
+}
+
+.login-form__social-btn--email {
+  margin-top: 12px;
+}
+
+/* Footer */
+.login-form__footer {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.login-form__terms {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.login-form__link {
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-form__link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-form__title {
+    font-size: 18px;
+  }
+
+  .login-form__tab {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .login-form__input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .login-form__submit-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .login-form__terms {
+    font-size: 10px;
+  }
+}

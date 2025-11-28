@@ -1,0 +1,250 @@
+/* RegisterForm.css - BEM Naming Convention */
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header */
+.register-form__header {
+  margin-bottom: 32px;
+}
+
+.register-form__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.register-form__tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+}
+
+.register-form__tab {
+  padding: 10px 24px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.register-form__tab--active {
+  color: #7c3aed;
+}
+
+.register-form__tab--active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #7c3aed;
+  border-radius: 2px;
+  animation: tabSlideIn 0.3s ease;
+}
+
+@keyframes tabSlideIn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.register-form__tab-divider {
+  font-size: 14px;
+  color: #d1d5db;
+  font-weight: 400;
+}
+
+/* Body */
+.register-form__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.register-form__input-group {
+  position: relative;
+}
+
+.register-form__input-wrapper {
+  position: relative;
+}
+
+.register-form__input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #1f2937;
+  transition: all 0.3s ease;
+  outline: none;
+  background: #fafafa;
+}
+
+.register-form__input::placeholder {
+  color: #9ca3af;
+}
+
+.register-form__input:focus {
+  border-color: #7c3aed;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.register-form__toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.register-form__toggle-btn:hover {
+  color: #7c3aed;
+}
+
+/* Submit Button */
+.register-form__submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+
+.register-form__submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+.register-form__submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Divider */
+.register-form__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.register-form__divider::before,
+.register-form__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.register-form__divider span {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* Social Signup Buttons */
+.register-form__social-btn {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.register-form__social-btn:hover {
+  border-color: #7c3aed;
+  background: #faf5ff;
+}
+
+.register-form__social-btn--email {
+  margin-top: 12px;
+}
+
+/* Footer */
+.register-form__footer {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.register-form__terms {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.register-form__link {
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-form__link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .register-form__title {
+    font-size: 18px;
+  }
+
+  .register-form__tab {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .register-form__input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .register-form__submit-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .register-form__terms {
+    font-size: 10px;
+  }
+}
