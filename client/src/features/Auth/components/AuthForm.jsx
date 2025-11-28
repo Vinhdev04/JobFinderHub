@@ -6,14 +6,19 @@ import '../styles/AuthForm.css';
 
 function AuthForm({ onClose }) {
   const [isLogin, setIsLogin] = useState(true);
+  const [isClose, setIsClose] = useState(false);
 
+  const closeModalAuth = (e) => {
+    setIsClose(()=> !isClose);
+  }
+  
   return (
     <div className="auth-form">
       <div className="auth-form__overlay" onClick={onClose}></div>
       
       <div className="auth-form__modal">
         {/* Close Button */}
-        <button className="auth-form__close-btn" onClick={onClose}>
+        <button className="auth-form__close-btn" onClick={closeModalAuth}>
           <X size={24} />
         </button>
 
@@ -21,12 +26,12 @@ function AuthForm({ onClose }) {
         <div className="auth-form__form-section">
           {isLogin ? (
             <LoginForm 
-              onClose={onClose}
+             
               onSwitchToRegister={() => setIsLogin(false)}
             />
           ) : (
             <RegisterForm 
-              onClose={onClose}
+             
               onSwitchToLogin={() => setIsLogin(true)}
             />
           )}
@@ -90,7 +95,7 @@ function AuthForm({ onClose }) {
               </div>
               <div className="auth-form__feature">
                 <span className="auth-form__feature-icon">📍</span>
-                <span className="auth-form__feature-text">Bệnh nhân TPHCM,12/Quý</span>
+                <span className="auth-form__feature-text"> TPHCM,12/Quý</span>
               </div>
               <div className="auth-form__feature">
                 <span className="auth-form__feature-icon">⏰</span>

@@ -35,36 +35,40 @@ const BackToTop = () => {
     });
   };
 
-  return (
+ return (
     <div className={`back-to-top ${isVisible ? 'back-to-top--visible' : ''}`}>
       <button 
         className="back-to-top__button theme-transition" 
         onClick={scrollToTop}
         aria-label="Scroll to top"
       >
-        <svg className="back-to-top__progress" viewBox="0 0 100 100">
-          <circle 
-            className="back-to-top__progress-bg" 
-            cx="50" 
-            cy="50" 
-            r="46"
-          />
-          <circle 
-            className="back-to-top__progress-bar" 
-            cx="50" 
-            cy="50" 
-            r="46"
-            style={{
-              strokeDashoffset: `${289 - (289 * scrollProgress) / 100}`
-            }}
-          />
-        </svg>
-        <div className="back-to-top__icon">
-          <UpOutlined />
-        </div>
+        {/* KHẮC PHỤC: Bọc nội dung bên trong nút bằng một <span> duy nhất */}
+        <span> 
+          <svg className="back-to-top__progress" viewBox="0 0 100 100">
+            <circle 
+              className="back-to-top__progress-bg" 
+              cx="50" 
+              cy="50" 
+              r="46"
+            />
+            <circle 
+              className="back-to-top__progress-bar" 
+              cx="50" 
+              cy="50" 
+              r="46"
+              style={{
+                strokeDashoffset: `${289 - (289 * scrollProgress) / 100}`
+              }}
+            />
+          </svg>
+          <div className="back-to-top__icon">
+            <UpOutlined />
+          </div>
+        </span> 
       </button>
     </div>
   );
+
 };
 
 export default BackToTop;

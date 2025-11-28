@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Dropdown, Button, Badge, Switch } from 'antd';
+import { Button, Badge, Input, Dropdown, Menu } from 'antd';
 import { 
   BellOutlined, 
   UserOutlined, 
   MenuOutlined,
   CloseOutlined,
-  DownOutlined,
   SearchOutlined,
   HomeOutlined,
-  SolutionOutlined,
-  BookOutlined,
-  TrophyOutlined,
-  SafetyOutlined,
-  HeartOutlined,
   FileTextOutlined,
-  BulbOutlined,
+  HeartOutlined,
   MoonOutlined,
-  SunOutlined
+  SunOutlined,
+  PlusOutlined,
+  EnvironmentOutlined,
+  RocketOutlined,
+  TeamOutlined,
+  DownOutlined,
+  CheckOutlined,
+  FolderOpenOutlined,
+  ClockCircleOutlined,
+  EyeOutlined
 } from '@ant-design/icons';
 import './Navbar.css';
+import { navItems, cities, jobMenu } from './const.jsx';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [activeNav, setActiveNav] = useState('home');
+  const [selectedCity, setSelectedCity] = useState('Hồ Chí Minh');
+  const [jobMenuOpen, setJobMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,252 +41,264 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Theme toggle handler
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       setIsDarkMode(true);
       document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.setAttribute('data-theme', 'light');
     }
   }, []);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
-    const theme = newTheme ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
 
-  const jobMenu = (
-    <Menu className="navbar__dropdown-menu theme-transition">
-      <Menu.ItemGroup title="Quản lý việc làm">
-        <Menu.Item key="1" icon={<SearchOutlined />}>Việc làm đã ứng tuyển</Menu.Item>
-        <Menu.Item key="2" icon={<HeartOutlined />}>Việc làm đã lưu</Menu.Item>
-        <Menu.Item key="3" icon={<BellOutlined />}>Việc làm chờ ứng tuyển</Menu.Item>
-        <Menu.Item key="4" icon={<SafetyOutlined />}>Nhà tuyển dụng xem hồ sơ bạn</Menu.Item>
-      </Menu.ItemGroup>
+  const cityMenu = (
+    <Menu 
+      className="jfh-dropdown-menu jfh-dropdown-menu--cities"
+      selectedKeys={[selectedCity]}
+      onClick={({ key }) => setSelectedCity(key)}
+    >
+      <div className="jfh-dropdown-menu__search">
+        <Input 
+          placeholder="Tìm kiếm tỉnh thành..."
+          prefix={<SearchOutlined />}
+          size="small"
+        />
+      </div>
+      {cities.map(city => (
+        <Menu.Item 
+          key={city.name} 
+          className="jfh-dropdown-menu__item jfh-dropdown-menu__item--city"
+        >
+          <div className="jfh-city-item">
+            <span className="jfh-city-item__name">
+              <EnvironmentOutlined /> {city.name}
+            </span>
+            <span className="jfh-city-item__count">{city.count.toLocaleString()} việc làm</span>
+          </div>
+        </Menu.Item>
+      ))}
       <Menu.Divider />
-      <Menu.Item key="5" icon={<SearchOutlined />}>Tìm Việc Làm</Menu.Item>
-      <Menu.Item key="6" icon={<SolutionOutlined />}>CV Hay</Menu.Item>
-      <Menu.Item key="7" icon={<BookOutlined />}>VietnamSalary</Menu.Item>
-      <Menu.Item key="8" icon={<TrophyOutlined />}>CareerMap</Menu.Item>
-    </Menu>
-  );
-
-  const toolMenu = (
-    <Menu className="navbar__dropdown-menu theme-transition">
-      <Menu.Item key="1" icon={<BookOutlined />}>Cẩm Nang Nghề Nghiệp</Menu.Item>
-      <Menu.Item key="2" icon={<SolutionOutlined />}>La Bàn Sự Nghiệp</Menu.Item>
-      <Menu.Item key="3" icon={<TrophyOutlined />}>Trạm Sạc Kỹ Năng</Menu.Item>
-      <Menu.Item key="4" icon={<SearchOutlined />}>Tọa Độ Nhân Tài</Menu.Item>
-      <Menu.Item key="5" icon={<SafetyOutlined />}>Bản Tin Công Sở</Menu.Item>
-      <Menu.Item key="6" icon={<HeartOutlined />}>Kì ột Vui Vẻ</Menu.Item>
-      <Menu.Item key="7" icon={<FileTextOutlined />}>Loa tin tức</Menu.Item>
-    </Menu>
-  );
-
-  const careerMenu = (
-    <Menu className="navbar__dropdown-menu theme-transition">
-      <Menu.Item key="1" icon={<BookOutlined />}>Cẩm Nang Nghề Nghiệp</Menu.Item>
-      <Menu.Item key="2" icon={<SolutionOutlined />}>La Bàn Sự Nghiệp</Menu.Item>
-      <Menu.Item key="3" icon={<TrophyOutlined />}>Trạm Sạc Kỹ Năng</Menu.Item>
-      <Menu.Item key="4" icon={<SearchOutlined />}>Tọa Độ Nhân Tài</Menu.Item>
-      <Menu.Item key="5" icon={<SafetyOutlined />}>Bản Tin Công Sở</Menu.Item>
-      <Menu.Item key="6" icon={<HeartOutlined />}>Kì ột Vui Vẻ</Menu.Item>
-      <Menu.Item key="7" icon={<FileTextOutlined />}>Loa tin tức</Menu.Item>
-    </Menu>
-  );
-
-  const regionMenu = (
-    <Menu className="navbar__dropdown-menu theme-transition">
-      <Menu.Item key="1" icon={<HomeOutlined />}>Miền Bắc</Menu.Item>
-      <Menu.Item key="2" icon={<HomeOutlined />}>Miền Trung</Menu.Item>
-      <Menu.Item key="3" icon={<HomeOutlined />}>Miền Nam</Menu.Item>
-    </Menu>
-  );
-
-  const userMenu = (
-    <Menu className="navbar__dropdown-menu theme-transition">
-      <Menu.Item key="1" icon={<UserOutlined />}>Đăng nhập</Menu.Item>
-      <Menu.Item key="2" icon={<UserOutlined />}>Đăng ký</Menu.Item>
-      <Menu.Item key="3" icon={<SearchOutlined />}>Tìm ứng viên</Menu.Item>
-    </Menu>
-  );
-
-  const recruiterMenu = (
-    <Menu className="navbar__dropdown-menu theme-transition">
-      <Menu.Item key="1" icon={<FileTextOutlined />}>Đăng tuyển</Menu.Item>
-      <Menu.Item key="2" icon={<SearchOutlined />}>Tìm ứng viên</Menu.Item>
-      <Menu.Item key="3" icon={<UserOutlined />}>Nhà Tuyển Dụng</Menu.Item>
+      <Menu.Item key="all" className="jfh-dropdown-menu__item jfh-dropdown-menu__item--all">
+        <strong>Tất cả tỉnh thành</strong>
+      </Menu.Item>
     </Menu>
   );
 
   return (
     <>
       {/* Top Banner */}
-      <div className="navbar-banner theme-transition">
-        <div className="navbar-banner__content">
-          <span className="navbar-banner__icon">🎯</span>
-          <span className="navbar-banner__text">
+      <div className="jfh-banner">
+        <div className="jfh-banner__content">
+          <span className="jfh-banner__icon">🎯</span>
+          <span className="jfh-banner__text">
             Ứng tuyển 1 chạm - Mọi lúc mọi nơi
           </span>
-          <span className="navbar-banner__app">JobFinderHub: Tìm Việc Nhanh</span>
-          <Button className="navbar-banner__button" size="small">
+          <span className="jfh-banner__highlight">
+            JobFinderHub: Tìm Việc Nhanh
+          </span>
+          <Button className="jfh-banner__button" size="small">
             Tải app ngay
           </Button>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <nav className={`navbar theme-transition ${isScrolled ? 'navbar--scrolled' : ''}`}>
-        <div className="navbar__container">
+      <nav className={`jfh-navbar ${isScrolled ? 'jfh-navbar--scrolled' : ''}`}>
+        <div className="jfh-navbar__container">
           {/* Logo */}
-          <div className="navbar__logo">
-            <div className="navbar__logo-icon">
-              <svg viewBox="0 0 100 100" className="navbar__logo-svg">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" strokeWidth="3"/>
-                <path d="M 30 45 L 45 60 L 70 35" fill="none" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"/>
-                <circle cx="30" cy="30" r="3" fill="#00d4ff"/>
-                <circle cx="70" cy="30" r="3" fill="#00d4ff"/>
-                <circle cx="50" cy="70" r="3" fill="#00d4ff"/>
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#0066ff"/>
-                    <stop offset="100%" stopColor="#00d4ff"/>
-                  </linearGradient>
-                </defs>
-              </svg>
+          <div className="jfh-navbar__logo">
+            <div className="jfh-navbar__logo-icon">
+              <SearchOutlined className="jfh-navbar__logo-icon-svg" />
+              <div className="jfh-navbar__logo-icon-pulse" />
             </div>
-            <div className="navbar__logo-text">
-              <span className="navbar__logo-title">JobFinderHub</span>
-              <span className="navbar__logo-subtitle">Đối Tác Sự Nghiệp Của Bạn</span>
+            <div className="jfh-navbar__logo-text">
+              <div className="jfh-navbar__logo-title">JobFinderHub</div>
+              <div className="jfh-navbar__logo-subtitle">Đối Tác Sự Nghiệp Của Bạn</div>
             </div>
           </div>
 
-          {/* Desktop Menu */}
-          <div className="navbar__menu">
-            <Dropdown overlay={jobMenu} trigger={['hover']} placement="bottomCenter">
-              <button className="navbar__menu-item theme-transition">
-                Việc làm <DownOutlined className="navbar__menu-icon" />
-              </button>
-            </Dropdown>
+          {/* Search Bar - Desktop */}
+          <div className="jfh-navbar__search">
+            <Input
+              size="large"
+              placeholder="Tìm kiếm công việc, công ty..."
+              prefix={<SearchOutlined className="jfh-navbar__search-icon" />}
+              suffix={
+                <Dropdown 
+                  overlay={cityMenu} 
+                  trigger={['click']}
+                  placement="bottomRight"
+                >
+                  <Button type="link" size="small" className="jfh-navbar__search-location">
+                    <EnvironmentOutlined /> {selectedCity} <DownOutlined style={{ fontSize: '10px' }} />
+                  </Button>
+                </Dropdown>
+              }
+              className="jfh-navbar__search-input"
+            />
+          </div>
 
-            <Dropdown overlay={toolMenu} trigger={['hover']} placement="bottomCenter">
-              <button className="navbar__menu-item theme-transition">
-                Công cụ <DownOutlined className="navbar__menu-icon" />
-              </button>
-            </Dropdown>
-
-            <Dropdown overlay={careerMenu} trigger={['hover']} placement="bottomCenter">
-              <button className="navbar__menu-item theme-transition">
-                Cẩm nang nghề nghiệp <DownOutlined className="navbar__menu-icon" />
-              </button>
-            </Dropdown>
-
-            <Dropdown overlay={regionMenu} trigger={['hover']} placement="bottomCenter">
-              <button className="navbar__menu-item theme-transition">
-                Miền Nam <DownOutlined className="navbar__menu-icon" />
-              </button>
-            </Dropdown>
+          {/* Desktop Navigation */}
+          <div className="jfh-navbar__nav">
+            {navItems.map(item => {
+              if (item.hasDropdown) {
+                return (
+                  <Dropdown 
+                    key={item.id}
+                    overlay={jobMenu} 
+                    trigger={['click']}
+                    visible={jobMenuOpen}
+                    onVisibleChange={setJobMenuOpen}
+                  >
+                    <button
+                      className={`jfh-navbar__nav-item ${activeNav === item.id ? 'jfh-navbar__nav-item--active' : ''}`}
+                      onClick={() => setActiveNav(item.id)}
+                    >
+                      {item.icon}
+                      <span className="jfh-navbar__nav-item-label">{item.label}</span>
+                      <DownOutlined className="jfh-navbar__nav-item-arrow" />
+                    </button>
+                  </Dropdown>
+                );
+              }
+              
+              return (
+                <button
+                  key={item.id}
+                  className={`jfh-navbar__nav-item ${activeNav === item.id ? 'jfh-navbar__nav-item--active' : ''}`}
+                  onClick={() => setActiveNav(item.id)}
+                >
+                  {item.icon}
+                  <span className="jfh-navbar__nav-item-label">{item.label}</span>
+                  {item.badge && (
+                    <span className="jfh-navbar__nav-item-badge">{item.badge}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* Actions */}
-          <div className="navbar__actions">
+          <div className="jfh-navbar__actions">
             {/* Theme Toggle */}
-            <div className="navbar__theme-toggle">
-              <button 
-                className="navbar__theme-button theme-transition"
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-              >
-                {isDarkMode ? (
-                  <SunOutlined className="navbar__theme-icon" />
-                ) : (
-                  <MoonOutlined className="navbar__theme-icon" />
-                )}
+            <button 
+              className="jfh-navbar__action-btn jfh-navbar__action-btn--theme"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {isDarkMode ? <SunOutlined /> : <MoonOutlined />}
+            </button>
+
+            {/* Notification */}
+            <Badge count={5} className="jfh-navbar__notification">
+              <button className="jfh-navbar__action-btn">
+                <BellOutlined />
               </button>
-            </div>
-
-            <div className="navbar__user-info">
-              <span className="navbar__user-label">Người tìm việc</span>
-              <Dropdown overlay={userMenu} trigger={['hover']}>
-                <button className="navbar__user-button theme-transition">
-                  Đăng ký/Đăng nhập
-                </button>
-              </Dropdown>
-            </div>
-
-            <Badge count={5} className="navbar__notification">
-              <Button 
-                type="text" 
-                icon={<BellOutlined />} 
-                className="navbar__icon-button theme-transition"
-              />
             </Badge>
 
-            <Dropdown overlay={recruiterMenu} trigger={['hover']}>
-              <Button type="primary" className="navbar__recruiter-button">
-                <UserOutlined /> DÀNH CHO NHÀ TUYỂN DỤNG
+            {/* User Menu - Desktop */}
+            <div className="jfh-navbar__user">
+              <Button to="/auth.login" 
+                type="text" 
+                icon={<UserOutlined />}
+                className="jfh-navbar__user-btn"
+              >
+                <span className="jfh-navbar__user-text">Đăng nhập</span>
               </Button>
-            </Dropdown>
+            </div>
+
+            {/* Recruiter Button */}
+            <Button  to=""
+              type="primary" 
+              icon={<TeamOutlined />}
+              className="jfh-navbar__recruiter-btn"
+            >
+              <span className="jfh-navbar__recruiter-text">Nhà tuyển dụng</span>
+            </Button>
+
+            {/* Post Job Button */}
+            <Button to="" 
+              type="primary" 
+              icon={<PlusOutlined />}
+              className="jfh-navbar__post-btn"
+            >
+              <span className="jfh-navbar__post-text">Đăng tin</span>
+            </Button>
 
             {/* Mobile Menu Toggle */}
-            <Button
-              type="text"
-              icon={isMobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
-              className="navbar__mobile-toggle theme-transition"
+            <button
+              className="jfh-navbar__mobile-toggle"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            />
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
+            </button>
           </div>
         </div>
 
-        {/* Secondary Navigation */}
-        <div className="navbar__secondary theme-transition">
-          <div className="navbar__secondary-container">
-            <button className="navbar__secondary-link navbar__secondary-link--active theme-transition">
-              <HomeOutlined /> Cẩm Nang Nghề Nghiệp
-            </button>
-            <button className="navbar__secondary-link theme-transition">La Bàn Sự Nghiệp</button>
-            <button className="navbar__secondary-link theme-transition">Trạm Sạc Kỹ Năng</button>
-            <button className="navbar__secondary-link theme-transition">Tọa Độ Nhân Tài</button>
-            <button className="navbar__secondary-link theme-transition">Bản Tin Công Sở</button>
-            <button className="navbar__secondary-link theme-transition">Kì ột Vui Vẻ</button>
-            <button className="navbar__secondary-link theme-transition">Loa tin tức</button>
-          </div>
+        {/* Mobile Search */}
+        <div className="jfh-navbar__mobile-search">
+          <Input
+            placeholder="Tìm kiếm..."
+            prefix={<SearchOutlined />}
+            className="jfh-navbar__mobile-search-input"
+          />
         </div>
 
         {/* Mobile Menu */}
-        <div className={`navbar__mobile-menu theme-transition ${isMobileMenuOpen ? 'navbar__mobile-menu--open' : ''}`}>
-          <div className="navbar__mobile-section">
-            <h4 className="navbar__mobile-title">Việc làm</h4>
-            <button className="navbar__mobile-link theme-transition"><SearchOutlined /> Tìm Việc Làm</button>
-            <button className="navbar__mobile-link theme-transition"><SolutionOutlined /> CV Hay</button>
-            <button className="navbar__mobile-link theme-transition"><BookOutlined /> VietnamSalary</button>
-            <button className="navbar__mobile-link theme-transition"><TrophyOutlined /> CareerMap</button>
+        <div className={`jfh-navbar__mobile-menu ${isMobileMenuOpen ? 'jfh-navbar__mobile-menu--open' : ''}`}>
+          {/* Mobile Nav Items */}
+          <div className="jfh-navbar__mobile-section">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                className={`jfh-navbar__mobile-item ${activeNav === item.id ? 'jfh-navbar__mobile-item--active' : ''}`}
+                onClick={() => {
+                  setActiveNav(item.id);
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="jfh-navbar__mobile-item-badge">{item.badge}</span>
+                )}
+              </button>
+            ))}
           </div>
 
-          <div className="navbar__mobile-section">
-            <h4 className="navbar__mobile-title">Công cụ</h4>
-            <button className="navbar__mobile-link theme-transition"><BookOutlined /> Cẩm Nang Nghề Nghiệp</button>
-            <button className="navbar__mobile-link theme-transition"><SolutionOutlined /> La Bàn Sự Nghiệp</button>
-            <button className="navbar__mobile-link theme-transition"><TrophyOutlined /> Trạm Sạc Kỹ Năng</button>
-            <button className="navbar__mobile-link theme-transition"><SearchOutlined /> Tọa Độ Nhân Tài</button>
-          </div>
-
-          <div className="navbar__mobile-section">
-            <h4 className="navbar__mobile-title">Tài khoản</h4>
-            <Button type="primary" block className="navbar__mobile-button">
-              Đăng nhập
+          {/* Mobile Actions */}
+          <div className="jfh-navbar__mobile-section jfh-navbar__mobile-section--actions">
+            <Button to="/auth/login"
+              type="primary" 
+              size="large"
+              icon={<UserOutlined />}
+              className="jfh-navbar__mobile-btn"
+              block
+            >
+              Đăng nhập / Đăng ký
             </Button>
-            <Button block className="navbar__mobile-button theme-transition">
-              Đăng ký
+            <Button to="" 
+              type="primary"
+              size="large"
+              icon={<TeamOutlined />}
+              className="jfh-navbar__mobile-btn jfh-navbar__mobile-btn--recruiter"
+              block
+            >
+              Dành cho Nhà tuyển dụng
             </Button>
-            <Button type="primary" block className="navbar__mobile-button navbar__mobile-button--recruiter">
-              Dành cho Nhà Tuyển Dụng
+            <Button to=""
+              size="large"
+              icon={<PlusOutlined />}
+              className="jfh-navbar__mobile-btn jfh-navbar__mobile-btn--post"
+              block
+            >
+              Đăng tin tuyển dụng
             </Button>
           </div>
         </div>
