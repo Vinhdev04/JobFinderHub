@@ -1,0 +1,352 @@
+// prisma/schema.prisma
+// Database: MongoDB with Prisma ORM
+// Tuân thủ 3NF và RBAC 5 roles
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS - Định nghĩa các trạng thái
+// ============================================
+
+enum UserRole {
+  STUDENT
+  RECRUITER
+  COMPANY_MANAGER
+  INTERN_MANAGER
+  SYS_ADMIN
+}
+
+enum CompanyVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum JobStatus {
+  DRAFT
+  PENDING_INTERNAL // Chờ Company Manager duyệt
+  PENDING_SCHOOL // Chờ Intern Manager duyệt
+  APPROVED
+  REJECTED
+  CLOSED
+}
+
+enum ApplicationStatus {
+  PENDING
+  VIEWED
+  INTERVIEW_SCHEDULED
+  OFFERED
+  REJECTED
+}
+
+enum NotificationType {
+  APPLICATION_RECEIVED
+  APPLICATION_VIEWED
+  APPLICATION_APPROVED
+  APPLICATION_REJECTED
+  JOB_APPROVED
+  JOB_REJECTED
+  NEW_MESSAGE
+  INTERVIEW_SCHEDULED
+  SYSTEM_ALERT
+}
+
+// ============================================
+// MODELS - Các bảng dữ liệu
+// ============================================
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  passwordHash String? // Null nếu đăng nhập bằng OAuth
+  fullName     String
+  phone        String?
+  avatar       String?
+  role         UserRole @default(STUDENT)
+  isActive     Boolean  @default(true)
+
+  // OAuth fields
+  googleId String? @unique
+  githubId String? @unique
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastLoginAt DateTime?
+
+  // Relations
+  studentProfile    StudentProfile?
+  recruiterProfile  RecruiterProfile?
+  companyManager    Company?           @relation("CompanyManager")
+  managedRecruiters RecruiterProfile[] @relation("ManagedRecruiters")
+
+  applications     Application[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  notifications    Notification[]
+  auditLogs        AuditLog[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model StudentProfile {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  studentId      String? // Mã sinh viên
+  university     String?
+  major          String?
+  graduationYear Int?
+  gpa            Float?
+
+  // CV & Portfolio
+  cvUrl        String?
+  portfolioUrl String?
+  githubUrl    String?
+  linkedinUrl  String?
+
+  // Skills (Array of strings)
+  skills String[]
+
+  // Interests
+  preferredLocations String[]
+  preferredJobTypes  String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("student_profiles")
+}
+
+model Company {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Manager relation
+  managerId String @unique @db.ObjectId
+  manager   User   @relation("CompanyManager", fields: [managerId], references: [id])
+
+  // Company info
+  companyName String
+  taxCode     String  @unique
+  address     String?
+  description String?
+  website     String?
+  logo        String?
+  industry    String?
+  companySize String? // "1-50", "51-200", "201-500", etc.
+
+  verificationStatus CompanyVerificationStatus @default(PENDING)
+  verifiedAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  recruiters RecruiterProfile[]
+  jobs       Job[]
+
+  @@map("companies")
+}
+
+model RecruiterProfile {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  companyId String  @db.ObjectId
+  company   Company @relation(fields: [companyId], references: [id])
+
+  position   String? // Job title: "HR Manager", "Talent Acquisition"
+  department String?
+
+  // Managed by Company Manager
+  managerId String @db.ObjectId
+  manager   User   @relation("ManagedRecruiters", fields: [managerId], references: [id])
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  jobs Job[]
+
+  @@map("recruiter_profiles")
+}
+
+model Job {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Relations
+  companyId String  @db.ObjectId
+  company   Company @relation(fields: [companyId], references: [id])
+
+  recruiterId String           @db.ObjectId
+  recruiter   RecruiterProfile @relation(fields: [recruiterId], references: [id])
+
+  // Job details
+  title            String
+  description      String
+  requirements     String
+  responsibilities String?
+  benefits         String?
+
+  // Salary
+  salaryMin      Float?
+  salaryMax      Float?
+  salaryCurrency String @default("VND")
+
+  // Location & Type
+  location String
+  workType String // "Remote", "Onsite", "Hybrid"
+  jobType  String // "Internship", "Full-time", "Part-time"
+
+  // Skills required (Array)
+  skillsRequired String[]
+
+  // Vacancies
+  numberOfPositions Int @default(1)
+
+  // Status & Approval flow
+  status JobStatus @default(DRAFT)
+
+  // Rejection reason
+  rejectionReason String?
+
+  // Approval timestamps
+  approvedByManagerAt DateTime?
+  approvedBySchoolAt  DateTime?
+
+  // Expiry
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  applications Application[]
+
+  @@index([status])
+  @@index([companyId])
+  @@index([location])
+  @@map("jobs")
+}
+
+model Application {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Relations
+  jobId String @db.ObjectId
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  studentId String @db.ObjectId
+  student   User   @relation(fields: [studentId], references: [id])
+
+  // Application data
+  cvUrl        String
+  coverLetter  String?
+  portfolioUrl String?
+
+  status ApplicationStatus @default(PENDING)
+
+  // Interview scheduling
+  interviewDate     DateTime?
+  interviewLocation String?
+  interviewNotes    String?
+
+  // Feedback
+  feedback String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([jobId, studentId])
+  @@index([studentId])
+  @@index([jobId])
+  @@index([status])
+  @@map("applications")
+}
+
+model Message {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Relations
+  senderId String @db.ObjectId
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+
+  receiverId String @db.ObjectId
+  receiver   User   @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  // Message content
+  content String
+
+  // Status
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([senderId, receiverId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model Notification {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Relations
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Notification data
+  type    NotificationType
+  title   String
+  content String
+
+  // Related entities (optional)
+  relatedJobId         String? @db.ObjectId
+  relatedApplicationId String? @db.ObjectId
+
+  // Status
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Actor (who performed the action)
+  actorId String @db.ObjectId
+  actor   User   @relation(fields: [actorId], references: [id])
+
+  // Action details
+  actionType  String // "DELETE_USER", "FORCE_APPROVE_JOB", "VIEW_LOGS"
+  targetTable String // "users", "jobs", "applications"
+  targetId    String? // ID of affected record
+
+  // Changes (JSON format)
+  oldValue Json?
+  newValue Json?
+
+  // Metadata
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@map("audit_logs")
+}
