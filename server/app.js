@@ -1,51 +1,38 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const dotenv = require('dotenv');
-const http = require('http');
-const { Server } = require('socket.io');
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
 
-// Load environment variables
+import { register, login, logout } from './controllers/authController.js';
+
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
-
-// Socket.io setup
-const io = new Server(server, {
-  cors: {
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  },
-});
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-}));
+app.use(
+    cors({
+        origin: process.env.CLIENT_URL,
+        credentials: true
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(morgan('dev'));
 
 // Routes
-app.use('/api/v1/auth', require('./routes/authRoutes'));
-app.use('/api/v1/jobs', require('./routes/jobRoutes'));
-app.use('/api/v1/applications', require('./routes/applicationRoutes'));
-app.use('/api/v1/users', require('./routes/userRoutes'));
-app.use('/api/v1/companies', require('./routes/companyRoutes'));
-app.use('/api/v1/messages', require('./routes/chatRoutes'));
-app.use('/api/v1/notifications', require('./routes/notificationRoutes'));
-app.use('/api/v1/admin', require('./routes/adminRoutes'));
+app.post('/auth/login', login);
+app.post('/auth/register', register);
+app.post('/auth/logout', logout);
 
-// Socket.io handlers
-require('./sockets')(io);
-
-// Error handler
-app.use(require('./middlewares/errorHandler'));
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
 
 // Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
 });

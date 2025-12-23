@@ -9,5 +9,6 @@ export default defineConfig({
     globals: true,
     include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
     exclude: ['node_modules', 'dist']
-  }
+  },
+  
 })
