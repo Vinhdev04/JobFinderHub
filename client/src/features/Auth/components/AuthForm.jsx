@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import LoginForm from '@components/forms/LoginForm';
 import RegisterForm from '@components/forms/RegisterForm';
 import '../styles/AuthForm.css';
 
-function AuthForm({ onClose }) {
-    const [isLogin, setIsLogin] = useState(true);
-    const [isClose, setIsClose] = useState(false);
+function AuthForm({ onClose, defaultView = 'login' }) {
+    const [isLogin, setIsLogin] = useState(defaultView === 'login');
+    const navigate = useNavigate();
 
-    const closeModalAuth = (e) => {
-        setIsClose(() => !isClose);
+    const handleClose = () => {
+        if (onClose) {
+            onClose();
+        } else {
+            navigate('/');
+        }
     };
 
     return (
         <div className='auth-form'>
-            <div className='auth-form__overlay' onClick={onClose}></div>
+            <div className='auth-form__overlay' onClick={handleClose}></div>
 
             <div className='auth-form__modal'>
                 <button
                     className='auth-form__close-btn'
-                    onClick={closeModalAuth}
+                    onClick={handleClose}
+                    type='button'
+                    aria-label='Đóng'
                 >
                     <X size={24} />
                 </button>
@@ -28,10 +35,12 @@ function AuthForm({ onClose }) {
                     {isLogin ? (
                         <LoginForm
                             onSwitchToRegister={() => setIsLogin(false)}
+                            onClose={handleClose}
                         />
                     ) : (
                         <RegisterForm
                             onSwitchToLogin={() => setIsLogin(true)}
+                            onClose={handleClose}
                         />
                     )}
                 </div>
@@ -40,13 +49,13 @@ function AuthForm({ onClose }) {
                     <div className='auth-form__promo-content'>
                         <div className='auth-form__logo'>
                             <svg width='140' height='32' viewBox='0 0 140 32'>
-                                <circle cx='10' cy='10' r='4' fill='#7C3AED' />
-                                <circle cx='16' cy='10' r='4' fill='#7C3AED' />
-                                <circle cx='22' cy='10' r='4' fill='#7C3AED' />
+                                <circle cx='10' cy='10' r='4' fill='#3b82f6' />
+                                <circle cx='16' cy='10' r='4' fill='#3b82f6' />
+                                <circle cx='22' cy='10' r='4' fill='#3b82f6' />
                                 <text
                                     x='0'
                                     y='26'
-                                    fill='#7C3AED'
+                                    fill='#1f2937'
                                     fontSize='16'
                                     fontWeight='700'
                                 >
@@ -101,7 +110,7 @@ function AuthForm({ onClose }) {
                                     ⏱️
                                 </span>
                                 <span className='auth-form__feature-text'>
-                                    12+triệu
+                                    12+ triệu
                                 </span>
                             </div>
                             <div className='auth-form__feature'>
@@ -109,8 +118,7 @@ function AuthForm({ onClose }) {
                                     📍
                                 </span>
                                 <span className='auth-form__feature-text'>
-                                    {' '}
-                                    TPHCM,12/Quý
+                                    TPHCM, 12/Quý
                                 </span>
                             </div>
                             <div className='auth-form__feature'>

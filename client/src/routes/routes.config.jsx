@@ -1,9 +1,10 @@
-// routes/routes.config.jsx (ĐÃ SỬA)
+// routes/routes.config.jsx
 
-import Home from '../pages/Home';
-import DefaultLayout from '../components/layout/DefaultLayout';
-import HomePage from '../pages/Home';
-import Auth from '../pages/Auth';
+import DefaultLayout from '@components/layout/DefaultLayout';
+import HomePage from '@pages/Home';
+import LoginPage from '@pages/LoginPage';
+import RegisterPage from '@pages/RegisterPage';
+import NotFoundPage from '@pages/NotFoundPage';
 
 const routes = [
     {
@@ -11,19 +12,25 @@ const routes = [
         element: <DefaultLayout />,
         children: [
             {
-                element: <HomePage />,
                 index: true,
+                element: <HomePage />,
                 name: 'Home'
             },
             {
-                path: '/about',
-                element: <HomePage />,
-                name: 'About'
+                path: 'auth/login',
+                element: <LoginPage />,
+                name: 'Login'
             },
             {
-                path: '/auth/login',
-                element: <Auth />,
-                name: 'Login'
+                path: 'auth/register',
+                element: <RegisterPage />,
+                name: 'Register'
+            },
+            // 404 - Must be last
+            {
+                path: '*',
+                element: <NotFoundPage />,
+                name: 'NotFound'
             }
         ]
     }
