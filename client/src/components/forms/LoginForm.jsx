@@ -1,28 +1,97 @@
-// LoginForm.jsx
+// client/src/components/forms/LoginForm.jsx
 import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import useAuth from '@features/auth/hooks/useAuth.js';
+import GithubLoginButton from '@features/auth/components/GithubLoginButton.jsx';
+import GoogleLoginButton from '@features/auth/components/GoogleLoginButton.jsx';
 import './LoginForm.css';
-import GithubLoginButton from '@features/auth/components/GithubLoginButton';
-import GoogleLoginButton from '@features/auth/components/GoogleLoginButton';
 
-function LoginForm({ onClose, onSwitchToRegister }) {
+function LoginForm({
+    onClose,
+    onSwitchToRegister,
+    onSwitchToForgotPassword,
+    onSuccess
+}) {
+    const navigate = useNavigate();
+    const { login, error, clearError } = useAuth();
+
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
+
     const [formData, setFormData] = useState({
-        phone: '',
+        email: '',
         password: ''
     });
 
     const handleInputChange = (e) => {
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [e.target.name]: e.target.value
+            [name]: value
         }));
+
+        // Clear error khi user bắt đầu nhập
+        if (validationErrors[name]) {
+            setValidationErrors((prev) => ({
+                ...prev,
+                [name]: null
+            }));
+        }
+        if (error) clearError();
     };
 
-    const handleSubmit = (e) => {
+    const validateForm = () => {
+        const errors = {};
+
+        // Validate email
+        if (!formData.email.trim()) {
+            errors.email = 'Email không được để trống';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.email = 'Email không hợp lệ';
+        }
+
+        // Validate password
+        if (!formData.password) {
+            errors.password = 'Mật khẩu không được để trống';
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleSubmit = async (e) => {
         e?.preventDefault?.();
-        // TODO: gọi API login ở đây
-        console.log('Login submit', formData);
+
+        if (!validateForm()) return;
+
+        setLoading(true);
+        try {
+            await login({
+                email: formData.email.toLowerCase().trim(),
+                password: formData.password
+            });
+
+            // Đăng nhập thành công
+            console.log('✅ Login successful!');
+
+            // Đóng modal nếu có
+            if (onClose) onClose();
+
+            // Gọi callback onSuccess (thường để reload page)
+            if (onSuccess) {
+                onSuccess();
+            } else {
+                // Fallback: Reload page để cập nhật navbar
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('❌ Login failed:', error.message);
+            // Error đã được set trong AuthContext
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -49,28 +118,53 @@ function LoginForm({ onClose, onSwitchToRegister }) {
             </div>
 
             <div className='login-form__body'>
-                {/* Phone */}
+                {/* Global Error Message */}
+                {error && (
+                    <div className='login-form__error-alert'>
+                        <AlertCircle size={18} />
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                {/* Email Input */}
                 <div className='login-form__input-group'>
                     <input
-                        type='tel'
-                        name='phone'
-                        className='login-form__input'
-                        placeholder='Nhập số điện thoại của bạn'
-                        value={formData.phone}
+                        type='email'
+                        name='email'
+                        className={`login-form__input ${
+                            validationErrors.email
+                                ? 'login-form__input--error'
+                                : ''
+                        }`}
+                        placeholder='Nhập email của bạn'
+                        value={formData.email}
                         onChange={handleInputChange}
+                        disabled={loading}
+                        autoComplete='email'
                     />
+                    {validationErrors.email && (
+                        <span className='login-form__error-text'>
+                            {validationErrors.email}
+                        </span>
+                    )}
                 </div>
 
-                {/* Password */}
+                {/* Password Input */}
                 <div className='login-form__input-group'>
                     <div className='login-form__input-wrapper'>
                         <input
                             type={showPassword ? 'text' : 'password'}
                             name='password'
-                            className='login-form__input'
+                            className={`login-form__input ${
+                                validationErrors.password
+                                    ? 'login-form__input--error'
+                                    : ''
+                            }`}
                             placeholder='Mật khẩu'
                             value={formData.password}
                             onChange={handleInputChange}
+                            disabled={loading}
+                            autoComplete='current-password'
                         />
                         <button
                             type='button'
@@ -79,6 +173,7 @@ function LoginForm({ onClose, onSwitchToRegister }) {
                             aria-label={
                                 showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'
                             }
+                            disabled={loading}
                         >
                             {showPassword ? (
                                 <EyeOff size={18} />
@@ -87,11 +182,45 @@ function LoginForm({ onClose, onSwitchToRegister }) {
                             )}
                         </button>
                     </div>
+                    {validationErrors.password && (
+                        <span className='login-form__error-text'>
+                            {validationErrors.password}
+                        </span>
+                    )}
                 </div>
 
-                {/* Submit */}
-                <button type='submit' className='login-form__submit-btn'>
-                    Đăng nhập
+                {/* Forgot Password Link */}
+                {onSwitchToForgotPassword && (
+                    <div className='login-form__forgot-password'>
+                        <button
+                            type='button'
+                            className='login-form__link'
+                            onClick={onSwitchToForgotPassword}
+                            disabled={loading}
+                        >
+                            Quên mật khẩu?
+                        </button>
+                    </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                    type='submit'
+                    className='login-form__submit-btn'
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <>
+                            <Loader2
+                                className='login-form__spinner'
+                                size={20}
+                                style={{ animation: 'spin 1s linear infinite' }}
+                            />
+                            <span>Đang đăng nhập...</span>
+                        </>
+                    ) : (
+                        'Đăng nhập'
+                    )}
                 </button>
 
                 {/* Divider */}
@@ -99,41 +228,32 @@ function LoginForm({ onClose, onSwitchToRegister }) {
                     <span>Hoặc</span>
                 </div>
 
-                <GoogleLoginButton />
-                <GithubLoginButton />
+                {/* OAuth Buttons */}
+                <GoogleLoginButton disabled={loading} onSuccess={onSuccess} />
+                <GithubLoginButton disabled={loading} onSuccess={onSuccess} />
             </div>
 
             <div className='login-form__footer'>
                 <p className='login-form__terms'>
                     Bằng việc đăng nhập, tôi đồng ý chia sẻ thông tin cá nhân
                     của mình theo{' '}
-                    <a href='#' className='login-form__link'>
+                    <a
+                        href='/terms'
+                        className='login-form__link'
+                        target='_blank'
+                    >
                         Điều khoản sử dụng
                     </a>{' '}
                     và{' '}
-                    <a href='#' className='login-form__link'>
+                    <a
+                        href='/privacy'
+                        className='login-form__link'
+                        target='_blank'
+                    >
                         Chính sách bảo mật
                     </a>
                     .
                 </p>
-                {/* Nếu muốn có nút đóng modal */}
-                {onClose && (
-                    <div style={{ textAlign: 'center', marginTop: 12 }}>
-                        <button
-                            type='button'
-                            onClick={onClose}
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: '#6b7280',
-                                cursor: 'pointer',
-                                textDecoration: 'underline'
-                            }}
-                        >
-                            Đóng
-                        </button>
-                    </div>
-                )}
             </div>
         </form>
     );

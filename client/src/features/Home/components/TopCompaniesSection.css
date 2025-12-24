@@ -1,0 +1,10 @@
+.company-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    background: white;
+}
+
+.company-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(78, 84, 200, 0.2) !important;
+}

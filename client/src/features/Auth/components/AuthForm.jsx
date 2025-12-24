@@ -1,3 +1,4 @@
+// client/src/features/auth/components/AuthForm.jsx
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -5,7 +6,7 @@ import LoginForm from '@components/forms/LoginForm';
 import RegisterForm from '@components/forms/RegisterForm';
 import '../styles/AuthForm.css';
 
-function AuthForm({ onClose, defaultView = 'login' }) {
+function AuthForm({ onClose, defaultView = 'login', onSuccess }) {
     const [isLogin, setIsLogin] = useState(defaultView === 'login');
     const navigate = useNavigate();
 
@@ -14,6 +15,19 @@ function AuthForm({ onClose, defaultView = 'login' }) {
             onClose();
         } else {
             navigate('/');
+        }
+    };
+
+    /**
+     * Xử lý khi đăng nhập/đăng ký thành công
+     */
+    const handleAuthSuccess = () => {
+        if (onSuccess) {
+            // Gọi callback từ parent (thường là để reload page)
+            onSuccess();
+        } else {
+            // Mặc định: reload page
+            window.location.reload();
         }
     };
 
@@ -36,11 +50,13 @@ function AuthForm({ onClose, defaultView = 'login' }) {
                         <LoginForm
                             onSwitchToRegister={() => setIsLogin(false)}
                             onClose={handleClose}
+                            onSuccess={handleAuthSuccess}
                         />
                     ) : (
                         <RegisterForm
                             onSwitchToLogin={() => setIsLogin(true)}
                             onClose={handleClose}
+                            onSuccess={handleAuthSuccess}
                         />
                     )}
                 </div>

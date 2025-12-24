@@ -73,8 +73,8 @@ model User {
   isActive     Boolean  @default(true)
 
   // OAuth fields
-  googleId String? @unique
-  githubId String? @unique
+  // googleId String? @unique
+  // githubId String? @unique
 
   // Timestamps
   createdAt   DateTime  @default(now())

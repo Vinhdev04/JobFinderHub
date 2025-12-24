@@ -1,0 +1,15 @@
+.guide-card {
+    transition: all 0.3s ease;
+    border-radius: 15px !important;
+    overflow: hidden;
+}
+
+.guide-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}

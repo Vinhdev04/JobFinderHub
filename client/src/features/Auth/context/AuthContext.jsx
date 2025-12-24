@@ -1,59 +1,212 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { authApi } from '../../../api/authApi';
+// client/src/contexts/AuthContext.jsx
+// Context quản lý trạng thái authentication toàn app
+import { createContext, useState, useEffect, useCallback } from 'react';
+import { authApi } from '@api/authApi.js';
 
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
+    // Kiểm tra auth khi app load
+    useEffect(() => {
+        checkAuth();
+    }, []);
 
-  const checkAuth = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const response = await authApi.getCurrentUser();
-        setUser(response.data.user);
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      localStorage.removeItem('token');
-    } finally {
-      setLoading(false);
-    }
-  };
+    /**
+     * Kiểm tra user đã đăng nhập chưa (từ token)
+     */
+    const checkAuth = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                setLoading(false);
+                return;
+            }
 
-  const login = async (credentials) => {
-    const response = await authApi.login(credentials);
-    const { user, token } = response.data;
-    localStorage.setItem('token', token);
-    setUser(user);
-    return user;
-  };
+            const response = await authApi.getCurrentUser();
+            setUser(response.data.user);
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            // Clear invalid tokens
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-  };
+    /**
+     * Đăng ký tài khoản mới
+     * @param {Object} data - { email, password, confirmPassword, fullName, phone?, role? }
+     */
+    const register = async (data) => {
+        try {
+            setError(null);
+            const response = await authApi.register(data);
 
-  const value = {
-    user,
-    loading,
-    login,
-    logout,
-    isAuthenticated: !!user,
-  };
+            const { user, accessToken, refreshToken } = response.data;
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+            // Lưu tokens
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            setUser(user);
+            return { success: true, user };
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message || 'Đăng ký thất bại';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+    };
+
+    /**
+     * Đăng nhập
+     * @param {Object} credentials - { email, password }
+     */
+    const login = async (credentials) => {
+        try {
+            setError(null);
+            const response = await authApi.login(credentials);
+
+            const { user, accessToken, refreshToken } = response.data;
+
+            // Lưu tokens
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            setUser(user);
+            return { success: true, user };
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message || 'Đăng nhập thất bại';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+    };
+
+    /**
+     * Đăng xuất
+     */
+    const logout = useCallback(async () => {
+        try {
+            await authApi.logout();
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            // Clear tokens và user state
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            setUser(null);
+            setError(null);
+        }
+    }, []);
+
+    /**
+     * Quên mật khẩu
+     * @param {string} email - Email user
+     */
+    const forgotPassword = async (email) => {
+        try {
+            setError(null);
+            const response = await authApi.forgotPassword(email);
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message || 'Gửi email thất bại';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+    };
+
+    /**
+     * Reset mật khẩu
+     * @param {Object} data - { token, newPassword, confirmPassword }
+     */
+    const resetPassword = async (data) => {
+        try {
+            setError(null);
+            const response = await authApi.resetPassword(data);
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message ||
+                'Đặt lại mật khẩu thất bại';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+    };
+
+    /**
+     * Đổi mật khẩu (đã đăng nhập)
+     * @param {Object} data - { currentPassword, newPassword, confirmPassword }
+     */
+    const changePassword = async (data) => {
+        try {
+            setError(null);
+            const response = await authApi.changePassword(data);
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message || 'Đổi mật khẩu thất bại';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+    };
+
+    /**
+     * Cập nhật thông tin user
+     * @param {Object} updatedUser - User data mới
+     */
+    const updateUser = useCallback((updatedUser) => {
+        setUser((prevUser) => ({
+            ...prevUser,
+            ...updatedUser
+        }));
+    }, []);
+
+    /**
+     * Clear error
+     */
+    const clearError = useCallback(() => {
+        setError(null);
+    }, []);
+
+    const value = {
+        // State
+        user,
+        loading,
+        error,
+        isAuthenticated: !!user,
+
+        // Methods
+        register,
+        login,
+        logout,
+        forgotPassword,
+        resetPassword,
+        changePassword,
+        updateUser,
+        clearError,
+        checkAuth,
+
+        // Helper functions
+        hasRole: (role) => user?.role === role,
+        hasAnyRole: (...roles) => roles.includes(user?.role),
+        isStudent: user?.role === 'STUDENT',
+        isRecruiter: user?.role === 'RECRUITER',
+        isCompanyManager: user?.role === 'COMPANY_MANAGER',
+        isInternManager: user?.role === 'INTERN_MANAGER',
+        isSysAdmin: user?.role === 'SYS_ADMIN'
+    };
+
+    return (
+        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    );
 };
+
+export default AuthContext;

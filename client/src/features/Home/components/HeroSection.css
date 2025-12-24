@@ -1,0 +1,36 @@
+.hero-section {
+    background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://source.unsplash.com/random/1920x1080/?abstract')
+        no-repeat center/cover;
+    opacity: 0.1;
+}
+
+.search-form {
+    transition: all 0.3s ease;
+}
+
+.search-form:hover {
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .search-form {
+        flex-direction: column;
+    }
+
+    .search-form > * {
+        width: 100% !important;
+    }
+}
