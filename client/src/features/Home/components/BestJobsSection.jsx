@@ -1,26 +1,35 @@
 import React from 'react';
-import './BestJobsSection.css';
+import '../styles/BestJobsSection.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css/animate.min.css';
 
 const bestJobs = [
     {
         id: 1,
-        title: 'Nhân Viên Kỹ Thuật Vận Hành - Bãi Trị C...',
+        title: 'Technical Operation Staff - Treatment Plant...',
         company: 'MITEX',
-        salary: '10 - 15 triệu',
-        location: 'Hà Nội',
+        salary: '10 - 15 million',
+        location: 'Hanoi',
         daysLeft: 1,
-        logo: 'https://via.placeholder.com/60?text=M'
+        logo: 'https://www.mitex.co.in/cdn/shop/files/MITEX_LOGO_PNG.png?v=1731743580&width=500' // Updated
+    },
+    // Added more...
+    {
+        id: 2,
+        title: 'Marketing Specialist',
+        company: 'Marketing Co',
+        salary: '12 - 18 million',
+        location: 'Ho Chi Minh',
+        daysLeft: 5,
+        logo: 'https://via.placeholder.com/60?text=MC' // Placeholder if needed
     }
-    // Add more...
 ];
 
 const BestJobsSection = () => {
     return (
         <section className='py-5 bg-white best-jobs-section'>
             <div className='container'>
-                <h2 className='mb-4 fw-bold'>Việc làm tốt nhất</h2>
+                <h2 className='mb-4 fw-bold'>Best Jobs</h2>
                 <div className='row g-4'>
                     {bestJobs.map((job, index) => (
                         <div key={job.id} className='col-md-6 col-lg-4'>
@@ -58,7 +67,7 @@ const BestJobsSection = () => {
                                     <div className='mt-auto'>
                                         <span className='text-danger'>
                                             <i className='bi bi-clock me-1'></i>
-                                            Còn {job.daysLeft} ngày
+                                            {job.daysLeft} days left
                                         </span>
                                     </div>
                                 </div>

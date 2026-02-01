@@ -1,27 +1,39 @@
 import React from 'react';
-import './TopCompaniesSection.css';
+import '../styles/TopCompaniesSection.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css/animate.min.css';
 
 const topCompanies = [
-    { name: 'Abbott', jobs: 19, logo: 'https://via.placeholder.com/80?text=A' },
-    { name: 'MAISON', jobs: 23, logo: 'https://via.placeholder.com/80?text=M' },
+    {
+        name: 'Abbott',
+        jobs: 19,
+        logo: 'https://logos-world.net/wp-content/uploads/2023/03/Abbott-Logo-1986.png'
+    },
+    {
+        name: 'MAISON',
+        jobs: 23,
+        logo: 'https://vesinhhoangmy.com/wp-content/uploads/2024/06/z5692841490449_fc17a15a3e105666ad05dd142d7c37a6.jpg'
+    },
     {
         name: 'MATBAO',
         jobs: 85,
-        logo: 'https://via.placeholder.com/80?text=MB'
+        logo: 'https://i.ytimg.com/vi/LCd4l3xyC9M/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDKQORIebRTdJw3cJpXlUM6o1PoKg'
     },
     {
         name: 'Viettel',
         jobs: 52,
-        logo: 'https://via.placeholder.com/80?text=V'
+        logo: 'https://cdn.prod.website-files.com/67528de23bee2c4c08297aef/67aa3028ff79371e52078222_Viettel%20Group.png'
     },
     {
         name: 'Abal Link Vietnam',
         jobs: 12,
-        logo: 'https://via.placeholder.com/80?text=AL'
+        logo: 'https://media.licdn.com/dms/image/v2/D4E22AQFgozmK3oQmHA/feedshare-shrink_800/B4EZkV8Z1sGoAk-/0/1757009781634?e=2147483647&v=beta&t=Tv8Ph42_CSCn11qQl5Eu031kqVDSqAPp0pZWcZVNoVk'
     },
-    { name: 'MoMo', jobs: 13, logo: 'https://via.placeholder.com/80?text=MM' }
+    {
+        name: 'MoMo',
+        jobs: 13,
+        logo: 'https://logos-world.net/wp-content/uploads/2024/12/MoMo-Logo-Old.png'
+    }
     // Add more from screenshots...
 ];
 
@@ -30,9 +42,9 @@ const TopCompaniesSection = () => {
         <section className='py-5 top-companies-section bg-light'>
             <div className='container'>
                 <div className='mb-4 d-flex justify-content-between align-items-center'>
-                    <h2 className='fw-bold'>Công ty nổi bật</h2>
+                    <h2 className='fw-bold'>Top Companies</h2>
                     <a href='#' className='text-primary fw-medium'>
-                        Xem tất cả <i className='bi bi-chevron-right'></i>
+                        View All <i className='bi bi-chevron-right'></i>
                     </a>
                 </div>
                 <div className='row g-4'>
@@ -52,7 +64,7 @@ const TopCompaniesSection = () => {
                                 />
                                 <p className='mb-0 fw-medium'>
                                     <i className='bi bi-briefcase me-1'></i>
-                                    {company.jobs} vị trí đang tuyển
+                                    {company.jobs} positions open
                                 </p>
                             </div>
                         </div>

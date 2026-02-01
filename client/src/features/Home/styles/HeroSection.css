@@ -1,6 +1,6 @@
 .hero-section {
     background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
-    padding: 100px 0;
+    padding: 120px 0; /* Increased padding */
     position: relative;
     overflow: hidden;
 }
@@ -12,17 +12,21 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://source.unsplash.com/random/1920x1080/?abstract')
-        no-repeat center/cover;
-    opacity: 0.1;
+    background: url('https://source.unsplash.com/random/1920x1080/?career,office')
+        no-repeat center/cover; /* Changed to career-themed */
+    opacity: 0.15;
 }
 
 .search-form {
     transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .search-form:hover {
     transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
@@ -32,5 +36,10 @@
 
     .search-form > * {
         width: 100% !important;
+        margin-bottom: 10px;
+    }
+
+    .search-form button {
+        margin-bottom: 0;
     }
 }

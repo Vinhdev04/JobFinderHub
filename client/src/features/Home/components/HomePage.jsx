@@ -5,7 +5,7 @@ import FeaturedJobsSection from './FeaturedJobsSection';
 import BestJobsSection from './BestJobsSection';
 import TopCompaniesSection from './TopCompaniesSection';
 import CareerGuidesSection from './CareerGuidesSection';
-import './HomePage.css';
+import '../styles/HomePage.css';
 
 const HomePage = () => {
     return (

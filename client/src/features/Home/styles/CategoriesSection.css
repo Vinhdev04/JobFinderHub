@@ -3,9 +3,11 @@
     cursor: pointer;
     background: #fff;
     border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
 }
 
 .category-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(78, 84, 200, 0.15) !important;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff); /* Subtle gradient */
 }

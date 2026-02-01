@@ -1,50 +1,68 @@
 import React, { useState } from 'react';
-import './FeaturedJobsSection.css';
+import '../styles/FeaturedJobsSection.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css/animate.min.css';
 
 const featuredJobs = [
     {
         id: 1,
-        title: 'Kỹ Thuật Viên Than Vô Ở Lương Trên 10Tr...',
-        company: 'Công Ty TNHH Toyota Hải Phòng',
-        salary: '10 - 15 triệu',
-        location: 'Hải Phòng',
+        title: 'Technician - Salary Over 10M...',
+        company: 'Toyota Hai Phong Co., Ltd',
+        salary: '10 - 15 million',
+        location: 'Hai Phong',
         daysLeft: 22,
-        logo: 'https://via.placeholder.com/60?text=T',
+        logo: 'https://thumbs.dreamstime.com/b/toyota-logo-building-official-dealer-213017167.jpg', // Updated
         isHot: true
     },
     {
         id: 2,
-        title: 'Nhân Viên Kế Toán Tòa Nhà',
+        title: 'Building Accountant',
         company: 'IMCS',
-        salary: '10 - 15 triệu',
-        location: 'Hà Nội',
+        salary: '10 - 15 million',
+        location: 'Hanoi',
         daysLeft: 6,
-        logo: 'https://via.placeholder.com/60?text=I'
+        logo: 'https://cdn.sanity.io/images/f5b6mtfn/selectscience-prod/9114c53847025e368eeae94d931e2d99e8751e3e-300x175.jpg?rect=0,9,300,158&w=1200&h=630' // Updated
+    },
+    // Added more for demo
+    {
+        id: 3,
+        title: 'Software Engineer',
+        company: 'Tech Corp',
+        salary: '15 - 20 million',
+        location: 'Ho Chi Minh',
+        daysLeft: 10,
+        logo: 'https://via.placeholder.com/60?text=TC', // Placeholder if needed
+        isHot: false
     }
 ];
 
 const cities = [
-    'Tất cả',
-    'Hà Nội',
-    'Bộc Giang',
-    'Bắc Kạn',
-    'Bắc Ninh',
-    'Cao Bằng',
-    'Hà Giang'
+    'All',
+    'Hanoi',
+    'Bac Giang',
+    'Bac Kan',
+    'Bac Ninh',
+    'Cao Bang',
+    'Ha Giang',
+    'Ho Chi Minh' // Added
 ];
 
 const FeaturedJobsSection = () => {
-    const [selectedCity, setSelectedCity] = useState('Tất cả');
+    const [selectedCity, setSelectedCity] = useState('All');
+
+    // Filter jobs by city (demo logic)
+    const filteredJobs =
+        selectedCity === 'All'
+            ? featuredJobs
+            : featuredJobs.filter((job) => job.location.includes(selectedCity));
 
     return (
         <section className='py-5 featured-jobs-section bg-light'>
             <div className='container'>
                 <div className='flex-wrap gap-3 mb-4 d-flex justify-content-between align-items-center'>
                     <h2 className='fw-bold'>
-                        <i className='bi bi-fire text-danger me-2'></i>Việc làm
-                        tuyển gấp
+                        <i className='bi bi-fire text-danger me-2'></i>Urgent
+                        Hiring Jobs
                     </h2>
                     <div className='gap-2 pb-2 overflow-auto city-tabs d-flex'>
                         {cities.map((city) => (
@@ -63,24 +81,30 @@ const FeaturedJobsSection = () => {
                     </div>
                 </div>
                 <div className='row g-4'>
-                    {featuredJobs.map((job, index) => (
+                    {filteredJobs.map((job, index) => (
                         <div key={job.id} className='col-md-6 col-lg-4'>
                             <div
                                 className='border-0 shadow card job-card h-100 animate__animated animate__fadeIn'
                                 style={{ animationDelay: `${index * 0.1}s` }}
+                                role='article'
+                                aria-labelledby={`job-title-${job.id}`}
                             >
                                 <div className='card-body d-flex flex-column'>
                                     <div className='d-flex justify-content-between align-items-start'>
                                         <img
                                             src={job.logo}
-                                            alt='company logo'
+                                            alt={`${job.company} logo`}
                                             className='rounded-circle'
                                             width='50'
                                             height='50'
+                                            style={{ objectFit: 'contain' }}
                                         />
                                         <i className='cursor-pointer bi bi-heart fs-4 text-muted'></i>
                                     </div>
-                                    <h5 className='mt-3 card-title fw-bold'>
+                                    <h5
+                                        id={`job-title-${job.id}`}
+                                        className='mt-3 card-title fw-bold'
+                                    >
                                         {job.title}
                                     </h5>
                                     <p className='mb-2 text-muted'>
@@ -99,7 +123,7 @@ const FeaturedJobsSection = () => {
                                     <div className='mt-auto d-flex justify-content-between align-items-center'>
                                         <span className='text-danger'>
                                             <i className='bi bi-clock me-1'></i>
-                                            Còn {job.daysLeft} ngày
+                                            {job.daysLeft} days left
                                         </span>
                                         {job.isHot && (
                                             <span className='badge bg-danger'>

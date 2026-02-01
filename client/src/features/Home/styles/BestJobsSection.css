@@ -1,8 +1,10 @@
-/* Similar to FeaturedJobsSection.css */
+/* Similar to FeaturedJobsSection.css - Added glassmorphism */
 .job-card {
     transition: all 0.3s ease;
     border-radius: 20px !important;
     overflow: hidden;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
 }
 
 .job-card:hover {

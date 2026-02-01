@@ -1,37 +1,40 @@
 import React from 'react';
-import './CareerGuidesSection.css';
+import '../styles/CareerGuidesSection.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css/animate.min.css';
 
 const careerGuides = [
     {
-        title: 'Top 5 việc làm nhà máy điện, thu nhập cao',
+        title: 'Top 5 Power Plant Jobs with High Income',
         description:
-            'Có hội việc làm nhà máy điện ngay hôm nay như thế nào? Nhũng vị trí tuyển dụng việc làm nhà máy điện phổ biến là gì? ...',
-        image: 'https://via.placeholder.com/400x250/ff6b6b/ffffff?text=Guide+1'
+            'How to find power plant jobs today? Popular positions in power plant recruitment?...',
+        image: 'https://www.witf.io/wp-content/uploads/2021/09/yale-climate-connections-graphic-energy-jobs-1920x1215.png' // Updated
     },
     {
-        title: 'Nhân viên part time là gì? 11 công việc part time lương cao',
+        title: 'What is a Part-Time Employee? 11 High-Paying Part-Time Jobs',
         description:
-            'Nhân viên part time là gì? Nếu bạn đang quan tâm đến hình thức việc làm này, hãy cùng Vieclam24h.vn tìm hiểu chi tiết ...',
-        image: 'https://via.placeholder.com/400x250/4ecdc4/ffffff?text=Guide+2'
+            'What is a part-time employee? If interested in this work form, explore details with JobFinderHub...',
+        image: 'https://www.homeworkhelpglobal.com/wp-content/uploads/2018/11/student-job.jpg' // Updated
     },
     {
-        title: 'Nhân viên vận hành máy là gì? Mô tả công việc, mức lương ...',
+        title: 'What is a Machine Operator? Job Description, Salary...',
         description:
-            'Nhân viên vận hành máy là gì? Tuyển dụng vị trí này cần những kỹ năng gì? Mức lương ra sao? ...',
-        image: 'https://via.placeholder.com/400x250/667eea/ffffff?text=Guide+3'
-    }
+            'What is a machine operator? Required skills for this position? Salary range?...',
+        image: 'https://resumegenius.com/wp-content/uploads/Machine-Operator-Resume-Job-Description-ATS-Keywords-Example.png' // Updated
+    },
     // Add more...
+    {
+        title: 'How to Start in IT',
+        description: 'Guide to entering the IT field...',
+        image: 'https://via.placeholder.com/400x250?text=IT+Guide' // Placeholder
+    }
 ];
 
 const CareerGuidesSection = () => {
     return (
         <section className='py-5 bg-white career-guides-section'>
             <div className='container'>
-                <h2 className='mb-5 text-center fw-bold'>
-                    Cẩm nang nghề nghiệp
-                </h2>
+                <h2 className='mb-5 text-center fw-bold'>Career Guides</h2>
                 <div className='row g-4'>
                     {careerGuides.map((guide, index) => (
                         <div key={index} className='col-md-4'>
@@ -58,7 +61,7 @@ const CareerGuidesSection = () => {
                 </div>
                 <div className='mt-4 text-center'>
                     <a href='#' className='btn btn-primary rounded-pill'>
-                        Xem thêm cẩm nang
+                        View More Guides
                     </a>
                 </div>
             </div>
